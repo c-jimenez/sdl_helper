@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build GCC",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"gcc",
+				"BUILD_TYPE=Debug"
+			],
+			"problemMatcher": "$gcc",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "tests GCC",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"tests-gcc"
+			],
+			"group": "build"
+		},
+		{
+			"label": "clean GCC",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"clean-gcc",
+				"BUILD_TYPE=Debug"
+			],
+			"group": "build"
+		}
+	]
+}

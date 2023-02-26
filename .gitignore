@@ -1,0 +1,7 @@
+build
+build_*
+bin/*
+coverage_*
+deploy_*
+packages
+.vscode/settings.json
