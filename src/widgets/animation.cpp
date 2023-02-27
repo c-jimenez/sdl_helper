@@ -93,7 +93,7 @@ animation::animation(animation&& move) noexcept
 }
 
 /** @brief Move assignment */
-animation& animation::operator = (animation && move) noexcept
+animation& animation::operator=(animation&& move) noexcept
 {
     m_is_started = false;
     m_restart    = false;

@@ -25,7 +25,10 @@ namespace widgets
 image::image(sdl::renderer& renderer) : widget(renderer), m_image(), m_image_size{0, 0, 0, 0}, m_image_ratio(1.f) { }
 
 /** @brief Copy constructor */
-image::image(const image& copy) : widget(copy.m_renderer), m_image(copy.m_image), m_image_size(copy.m_image_size), m_image_ratio(copy.m_image_ratio) { }
+image::image(const image& copy)
+    : widget(copy.m_renderer), m_image(copy.m_image), m_image_size(copy.m_image_size), m_image_ratio(copy.m_image_ratio)
+{
+}
 
 /** @brief Copy assignment */
 image& image::operator=(const image& copy)

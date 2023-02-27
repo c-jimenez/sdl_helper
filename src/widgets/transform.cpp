@@ -72,7 +72,7 @@ transform::transform(transform&& move) noexcept
 }
 
 /** @brief Move assignment */
-transform& transform::operator=(transform&& move) noexcept 
+transform& transform::operator=(transform&& move) noexcept
 {
     m_scaling    = move.m_scaling;
     m_rot_angle  = move.m_rot_angle;

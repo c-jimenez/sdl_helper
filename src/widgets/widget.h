@@ -19,9 +19,9 @@ along with SDLHelper. If not, see <http://www.gnu.org/licenses/>.
 #ifndef GAME_WIDGET_H
 #define GAME_WIDGET_H
 
+#include "animation.h"
 #include "sdl_renderer.h"
 #include "transform.h"
-#include "animation.h"
 
 namespace widgets
 {

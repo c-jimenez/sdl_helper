@@ -25,6 +25,12 @@ deploy: deploy-gcc
 # Silent makefile
 .SILENT:
 
+# Format code
+format:
+	@echo "Formatting source code..."
+	@find ./src -name '*.h' -or -name '*.cpp' | xargs clang-format -i
+	@find ./examples -name '*.h' -or -name '*.cpp' | xargs clang-format -i
+	@echo "Formatting done!"
 
 # Build/clean all targets
 all: gcc clang
