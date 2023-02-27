@@ -22,10 +22,10 @@ namespace widgets
 {
 
 /** @brief Constructor */
-image::image(sdl::renderer& renderer) : widget(renderer), m_image(), m_image_size{0, 0, 0, 0} { }
+image::image(sdl::renderer& renderer) : widget(renderer), m_image(), m_image_size{0, 0, 0, 0}, m_image_ratio(1.f) { }
 
 /** @brief Copy constructor */
-image::image(const image& copy) : widget(copy.m_renderer), m_image(copy.m_image), m_image_size(copy.m_image_size) { }
+image::image(const image& copy) : widget(copy.m_renderer), m_image(copy.m_image), m_image_size(copy.m_image_size), m_image_ratio(copy.m_image_ratio) { }
 
 /** @brief Copy assignment */
 image& image::operator=(const image& copy)
@@ -76,7 +76,7 @@ void image::update_texture()
 
         // Fill background
         m_renderer->set_draw_color(m_bg_color);
-        m_renderer->fill_rect(img_size);
+        m_renderer->clear();
 
         // Put the image over
         if (m_image)

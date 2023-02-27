@@ -24,7 +24,8 @@ namespace widgets
 /** @brief Constructor */
 widget::widget(sdl::renderer& renderer)
     : m_renderer(renderer),
-      m_transform(*this),
+      m_animation(),
+      m_transform(),
       m_draw_boundary_box(false),
       m_bg_color{0, 0, 0, 0},
       m_is_autosized(true),
@@ -122,7 +123,8 @@ void widget::render()
         }
 
         // Render with transformation
-        m_transform.apply(m_renderer);
+        m_animation.apply(*this);
+        m_transform.apply(m_renderer, *this);
     }
 }
 

@@ -103,7 +103,7 @@ sdl_surface::~sdl_surface()
 }
 
 /** @brief Constructor */
-sdl_surface::sdl_surface(SDL_Surface* handle) : m_handle(handle), m_is_owner(false) { }
+sdl_surface::sdl_surface(SDL_Surface* handle) : m_handle(handle), m_is_owner(true) { }
 
 /** @brief Constructor */
 sdl_surface::sdl_surface(SDL_Surface* handle, bool is_owner) : m_handle(handle), m_is_owner(is_owner) { }

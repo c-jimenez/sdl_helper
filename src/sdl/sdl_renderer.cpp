@@ -32,6 +32,12 @@ sdl_renderer::~sdl_renderer()
 /** @brief Constructor */
 sdl_renderer::sdl_renderer(SDL_Renderer* handle) : m_handle(handle) { }
 
+/** @brief Get information about a rendering context */
+bool sdl_renderer::get_info(SDL_RendererInfo& info) const
+{
+    return (SDL_GetRendererInfo(m_handle, &info) == 0);
+}
+
 /** @brief Create a texture associated to the renderer */
 texture sdl_renderer::create_texture(Uint32 format, int access, int w, int h)
 {

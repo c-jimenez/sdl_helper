@@ -48,12 +48,12 @@ class sprite : public widget
     sprite& operator=(const sprite& copy) = delete;
 
     /** @brief Add an animation */
-    bool add_animation(int id, const image_list* animation);
+    bool add_img_animation(int id, const image_list* animation);
     /** @brief Add an animation */
-    bool add_animation(int id, const image_list& animation);
+    bool add_img_animation(int id, const image_list& animation);
 
     /** @brief Set the current animation */
-    bool set_animation(int id);
+    bool set_img_animation(int id);
 
     /** @brief Set the framerate */
     void set_framerate(float fps);

@@ -32,14 +32,19 @@ class transform
 {
   public:
     /** @brief Constructor */
-    transform(widget& w);
+    transform();
     /** @brief Destructor */
     virtual ~transform() = default;
 
-    /** @brief Copy constructor => deleted */
-    transform(const transform& copy) = delete;
+    /** @brief Copy constructor */
+    transform(const transform& copy);
     /** @brief Copy assignment */
     transform& operator=(const transform& copy);
+
+    /** @brief Move constructor */
+    transform(transform&& move) noexcept;
+    /** @brief Move assignment */
+    transform& operator=(transform&& move) noexcept;
 
     /** @brief Reset the transformation back to identity transform */
     void reset();
@@ -65,11 +70,9 @@ class transform
     SDL_RendererFlip get_flip() const { return m_flip; }
 
     /** @brief Apply the transformation */
-    bool apply(sdl::renderer& renderer);
+    bool apply(sdl::renderer& renderer, widget& w);
 
   private:
-    /** @brief Associated widget */
-    widget& m_widget;
     /** @brief Scaling */
     float m_scaling;
     /** @brief Rotation angle in degrees */

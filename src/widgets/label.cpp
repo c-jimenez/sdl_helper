@@ -75,7 +75,7 @@ void label::update_texture()
 
         // Fill background
         m_renderer->set_draw_color(m_bg_color);
-        m_renderer->fill_rect(m_size);
+        m_renderer->clear();
 
         // Put the text texture over
         if (text_texture)

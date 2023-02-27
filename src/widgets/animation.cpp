@@ -25,10 +25,9 @@ namespace widgets
 {
 
 /** @brief Constructor */
-animation::animation(widget& w)
-    : m_widget(w),
-      m_steps(),
-      m_current_transform(w),
+animation::animation()
+    : m_steps(),
+      m_current_transform(),
       m_loop(false),
       m_is_started(false),
       m_current_step(m_steps.cend()),
@@ -39,12 +38,26 @@ animation::animation(widget& w)
 }
 
 /** @brief Constructor */
-animation::animation(widget& w, bool loop, std::vector<step>&& steps)
-    : m_widget(w),
-      m_steps(steps),
-      m_current_transform(w),
+animation::animation(bool loop, std::vector<step>&& steps)
+    : m_steps(steps),
+      m_current_transform(),
       m_loop(loop),
       m_is_started(false),
+      m_restart(false),
+      m_current_step(m_steps.cend()),
+      m_start_step_ts(),
+      m_next_step_ts()
+{
+    reset();
+}
+
+/** @brief Copy constructor */
+animation::animation(const animation& copy)
+    : m_steps(copy.m_steps),
+      m_current_transform(),
+      m_loop(copy.m_loop),
+      m_is_started(false),
+      m_restart(false),
       m_current_step(m_steps.cend()),
       m_start_step_ts(),
       m_next_step_ts()
@@ -56,9 +69,39 @@ animation::animation(widget& w, bool loop, std::vector<step>&& steps)
 animation& animation::operator=(const animation& copy)
 {
     m_is_started = false;
+    m_restart    = false;
     m_loop       = copy.m_loop;
     m_steps      = copy.m_steps;
     reset();
+    return (*this);
+}
+
+/** @brief Move constructor */
+animation::animation(animation&& move) noexcept
+    : m_steps(std::move(move.m_steps)),
+      m_current_transform(),
+      m_loop(move.m_loop),
+      m_is_started(false),
+      m_restart(false),
+      m_current_step(m_steps.cend()),
+      m_start_step_ts(),
+      m_next_step_ts()
+{
+    reset();
+    move.m_is_started = false;
+    move.reset();
+}
+
+/** @brief Move assignment */
+animation& animation::operator = (animation && move) noexcept
+{
+    m_is_started = false;
+    m_restart    = false;
+    m_loop       = move.m_loop;
+    m_steps      = std::move(move.m_steps);
+    reset();
+    move.m_is_started = false;
+    move.reset();
     return (*this);
 }
 
@@ -73,14 +116,12 @@ bool animation::start()
         // Check if there are steps left
         if (!is_done())
         {
-            // Save current transform state
-            m_current_transform = m_widget.get_transform();
-
             // Compute start and next step timestamps
             m_start_step_ts = std::chrono::steady_clock::now();
             m_next_step_ts  = m_start_step_ts + m_current_step->duration;
 
             m_is_started = true;
+            m_restart    = true;
         }
 
         ret = true;
@@ -111,17 +152,24 @@ void animation::reset()
 }
 
 /** @brief Apply the animation */
-void animation::apply()
+void animation::apply(widget& w)
 {
     // Check if the animation is started
     if (m_is_started)
     {
+        // Save initial transform state
+        if (m_restart)
+        {
+            m_current_transform = w.get_transform();
+            m_restart           = false;
+        }
+
         // Check the end of current step
         auto now = std::chrono::steady_clock::now();
         if (now >= m_next_step_ts)
         {
             // Apply the targeted transformation to avoid rounding issues
-            transform& widget_transform = m_widget.get_transform();
+            transform& widget_transform = w.get_transform();
             if (m_current_step->scaling.has_value())
             {
                 widget_transform.set_scaling(m_current_step->scaling.value());
@@ -156,12 +204,12 @@ void animation::apply()
                 m_next_step_ts  = now + m_current_step->duration;
 
                 // Save initial transform state for dynamic transformations
-                m_current_transform = m_widget.get_transform();
+                m_current_transform = w.get_transform();
 
                 // Apply static transformations
                 if (m_current_step->flip.has_value())
                 {
-                    m_widget.get_transform().set_flip(m_current_step->flip.value());
+                    w.get_transform().set_flip(m_current_step->flip.value());
                 }
             }
         }
@@ -172,7 +220,7 @@ void animation::apply()
             float progress = static_cast<float>(diff.count()) / static_cast<float>(m_current_step->duration.count());
 
             // Apply dynamic transformations
-            transform& widget_transform = m_widget.get_transform();
+            transform& widget_transform = w.get_transform();
             if (m_current_step->scaling.has_value())
             {
                 float current_scaling = m_current_transform.get_scaling();

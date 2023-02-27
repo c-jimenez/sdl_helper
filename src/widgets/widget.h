@@ -21,6 +21,7 @@ along with SDLHelper. If not, see <http://www.gnu.org/licenses/>.
 
 #include "sdl_renderer.h"
 #include "transform.h"
+#include "animation.h"
 
 namespace widgets
 {
@@ -63,6 +64,11 @@ class widget
     widget(const widget& copy) = delete;
     /** @brief Copy assignment => deleted */
     widget& operator=(const widget& copy) = delete;
+
+    /** @brief Get the animation applied to the widget */
+    animation& get_animation() { return m_animation; }
+    /** @brief Get the animation applied to the widget */
+    const animation& get_animation() const { return m_animation; }
 
     /** @brief Get the geometrical transformation applied to the widget */
     transform& get_transform() { return m_transform; }
@@ -114,6 +120,8 @@ class widget
 
     /** @brief Render the widget */
     void render();
+    /** @brief Indicate that the widget texture must be updated for next rendering */
+    void update_needed();
 
     /** @brief Update the texture representing the widget */
     virtual void update_texture() = 0;
@@ -123,6 +131,8 @@ class widget
   protected:
     /** @brief Renderer of the widget */
     sdl::renderer& m_renderer;
+    /** @brief Animation */
+    animation m_animation;
     /** @brief Transformation */
     transform m_transform;
     /** @brief Indicate if a boundary box must be displayed around the widget */
@@ -147,8 +157,6 @@ class widget
     /** @brief Called to notify that the rendering process starts */
     virtual void on_render() { }
 
-    /** @brief Indicate that the widget texture must be updated for next rendering */
-    void update_needed();
     /** @brief Compute the position of a content based on its alignment */
     SDL_Rect compute_alignment(const SDL_Rect& content_size);
 

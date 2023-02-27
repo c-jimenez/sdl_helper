@@ -23,9 +23,23 @@ namespace widgets
 {
 
 /** @brief Constructor */
-transform::transform(widget& w) : m_widget(w), m_scaling(1.f), m_rot_angle(0.), m_rot_center(), m_flip()
+transform::transform() : m_scaling(1.f), m_rot_angle(0.), m_rot_center(), m_rot_center_ptr(nullptr), m_flip()
 {
     reset();
+}
+
+/** @brief Copy constructor */
+transform::transform(const transform& copy)
+    : m_scaling(copy.m_scaling),
+      m_rot_angle(copy.m_rot_angle),
+      m_rot_center(copy.m_rot_center),
+      m_rot_center_ptr(nullptr),
+      m_flip(copy.m_flip)
+{
+    if (copy.m_rot_center_ptr)
+    {
+        m_rot_center_ptr = &m_rot_center;
+    }
 }
 
 /** @brief Copy assignment */
@@ -39,6 +53,36 @@ transform& transform::operator=(const transform& copy)
         m_rot_center_ptr = &m_rot_center;
     }
     m_flip = copy.m_flip;
+    return *this;
+}
+
+/** @brief Move constructor */
+transform::transform(transform&& move) noexcept
+    : m_scaling(move.m_scaling),
+      m_rot_angle(move.m_rot_angle),
+      m_rot_center(move.m_rot_center),
+      m_rot_center_ptr(nullptr),
+      m_flip(move.m_flip)
+{
+    if (move.m_rot_center_ptr)
+    {
+        m_rot_center_ptr = &m_rot_center;
+    }
+    move.reset();
+}
+
+/** @brief Move assignment */
+transform& transform::operator=(transform&& move) noexcept 
+{
+    m_scaling    = move.m_scaling;
+    m_rot_angle  = move.m_rot_angle;
+    m_rot_center = move.m_rot_center;
+    if (move.m_rot_center_ptr)
+    {
+        m_rot_center_ptr = &m_rot_center;
+    }
+    m_flip = move.m_flip;
+    move.reset();
     return *this;
 }
 
@@ -66,17 +110,17 @@ void transform::set_rot_center(const SDL_Point* rot_center)
 }
 
 /** @brief Apply the transformation */
-bool transform::apply(sdl::renderer& renderer)
+bool transform::apply(sdl::renderer& renderer, widget& w)
 {
     bool ret = false;
 
     // Compute new size
-    SDL_Rect size = m_widget.get_size_position();
+    SDL_Rect size = w.get_size_position();
     size.w        = static_cast<int>(static_cast<float>(size.w) * m_scaling);
     size.h        = static_cast<int>(static_cast<float>(size.h) * m_scaling);
 
     // Render widget
-    ret = renderer->copy(m_widget.get_texture(), nullptr, &size, m_rot_angle, m_rot_center_ptr, m_flip);
+    ret = renderer->copy(w.get_texture(), nullptr, &size, m_rot_angle, m_rot_center_ptr, m_flip);
 
     return ret;
 }

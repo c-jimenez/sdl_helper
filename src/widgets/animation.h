@@ -35,16 +35,21 @@ class animation
     struct step;
 
     /** @brief Constructor */
-    animation(widget& w);
+    animation();
     /** @brief Constructor */
-    animation(widget& w, bool loop, std::vector<step>&& steps);
+    animation(bool loop, std::vector<step>&& steps);
     /** @brief Destructor */
     virtual ~animation() = default;
 
-    /** @brief Copy constructor => deleted */
-    animation(const animation& copy) = delete;
+    /** @brief Copy constructor */
+    animation(const animation& copy);
     /** @brief Copy assignment */
     animation& operator=(const animation& copy);
+
+    /** @brief Move constructor */
+    animation(animation&& move) noexcept;
+    /** @brief Move assignment */
+    animation& operator=(animation&& move) noexcept;
 
     /** @brief Start the animation */
     bool start();
@@ -54,7 +59,7 @@ class animation
     void reset();
 
     /** @brief Apply the animation */
-    void apply();
+    void apply(widget& w);
 
     /** @brief Indicate if the animation is done */
     bool is_done() const { return (m_current_step == m_steps.cend()); }
@@ -89,8 +94,6 @@ class animation
     }
 
   private:
-    /** @brief Associated widget */
-    widget& m_widget;
     /** @brief Animation steps */
     std::vector<step> m_steps;
     /** @brief Current transform */
@@ -99,6 +102,8 @@ class animation
     bool m_loop;
     /** @brief Indicate if the animation is started */
     bool m_is_started;
+    /** @brief Indicate a restart of the animation */
+    bool m_restart;
 
     /** @brief Current step */
     std::vector<step>::const_iterator m_current_step;

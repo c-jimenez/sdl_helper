@@ -48,6 +48,9 @@ class sdl_renderer
     /** @brief Destructor */
     ~sdl_renderer();
 
+    /** @brief Get information about a rendering context */
+    bool get_info(SDL_RendererInfo& info) const;
+
     /**
      * @brief Create a texture associated to the renderer
      * @param format Color format

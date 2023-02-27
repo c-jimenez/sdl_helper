@@ -34,7 +34,7 @@ namespace game
 scene::scene(fonts_db& fonts, sdl::window& window, bool is_fixed_fps, float fps)
     : m_fonts(fonts),
       m_window(window),
-      m_renderer(m_window->create_renderer()),
+      m_renderer(m_window->create_renderer(-1, (is_fixed_fps?(SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_TARGETTEXTURE):SDL_RENDERER_TARGETTEXTURE))),
       m_bg_color{0, 0, 0, 255},
       m_is_fixed_fps(is_fixed_fps),
       m_fixed_fps(fps),
@@ -55,6 +55,16 @@ scene::~scene() { }
 /** @brief Start the scene */
 void scene::start()
 {
+    // Get the capacities of the renderer
+    SDL_RendererInfo renderer_info;
+    m_renderer->get_info(renderer_info);
+    if ((renderer_info.flags | SDL_RENDERER_PRESENTVSYNC) != 0)
+    {
+        // Disable software framerate caping and let framerate
+        // to adjust to driver vsync
+        m_is_fixed_fps = false;
+    }
+
     // Label for framerate display
     widgets::label fps_label(m_renderer);
     fps_label.set_text("0 FPS");
@@ -110,7 +120,7 @@ void scene::start()
         {
             m_renderer->push_texture(virtual_screen_texture);
             m_renderer->set_draw_color(m_virtual_screen_bg_color);
-            m_renderer->fill_rect(m_renderer->get_draw_rect());
+            m_renderer->clear();
         }
 
         // Render scene

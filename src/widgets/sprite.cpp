@@ -29,18 +29,18 @@ sprite::sprite(sdl::renderer& renderer)
 }
 
 /** @brief Add an animation */
-bool sprite::add_animation(int id, const image_list* animation)
+bool sprite::add_img_animation(int id, const image_list* animation)
 {
     bool ret = false;
     if (animation)
     {
-        ret = add_animation(id, *animation);
+        ret = add_img_animation(id, *animation);
     }
     return ret;
 }
 
 /** @brief Add an animation */
-bool sprite::add_animation(int id, const image_list& animation)
+bool sprite::add_img_animation(int id, const image_list& animation)
 {
     bool ret = false;
 
@@ -83,7 +83,7 @@ void sprite::set_framerate(float fps)
 }
 
 /** @brief Set the current animation */
-bool sprite::set_animation(int id)
+bool sprite::set_img_animation(int id)
 {
     bool ret = false;
 
