@@ -20,6 +20,9 @@ along with SDLHelper. If not, see <http://www.gnu.org/licenses/>.
 #define GAME_SCENE_H
 
 #include "sdl.h"
+#include "widget.h"
+
+#include <set>
 
 namespace game
 {
@@ -46,6 +49,11 @@ class scene
     /** @brief Start the scene */
     void start();
 
+    /** @brief Add a widget to the scene */
+    bool add_widget(widgets::widget& widget);
+    /** @brief Remove a widget from the scene */
+    bool remove_widget(widgets::widget& widget);
+
   protected:
     /**
      * @brief Called to handle an input event
@@ -54,7 +62,7 @@ class scene
     virtual void on_input_event(const SDL_Event& event) { (void)event; }
 
     /** @brief Called to render the scene */
-    virtual void on_render() { }
+    virtual void on_render();
 
     /** @brief Get the window which displays the scene */
     sdl::window& get_window() { return m_window; }
@@ -108,6 +116,9 @@ class scene
     SDL_Rect m_virtual_screen_size;
     /** @brief Background color of the virtual screen */
     SDL_Color m_virtual_screen_bg_color;
+
+    /** @brief Widgets cmopsing the scene */
+    std::set<widgets::widget*> m_widgets;
 };
 
 } // namespace game

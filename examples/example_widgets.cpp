@@ -138,6 +138,11 @@ class my_scene : public game::scene
                                                animation::flip_step(SDL_FLIP_HORIZONTAL, 250ms),
                                                animation::flip_step(SDL_FLIP_NONE, 250ms)});
         m_sprite2.get_animation().start();
+
+        // Add widgets to the scene
+        add_widget(m_image);
+        add_widget(m_sprite1);
+        add_widget(m_sprite2);
     }
 
   protected:
@@ -171,6 +176,10 @@ class my_scene : public game::scene
             {
                 m_rot -= 5.;
             }
+            if (event.key.keysym.sym == SDLK_v)
+            {
+                m_image.set_visible(!m_image.is_visible());
+            }
             if (anim != m_anim)
             {
                 m_anim = anim;
@@ -179,23 +188,15 @@ class my_scene : public game::scene
             m_sprite1.get_transform().set_scaling(m_scale);
             m_sprite1.get_transform().set_rot_angle(m_rot);
         }
-
-        // This event is triggered when all the textures must be redrawn
-        if (event.type == SDL_RENDER_TARGETS_RESET)
-        {
-            m_image.update_needed();
-            m_sprite1.update_needed();
-            m_sprite2.update_needed();
-        }
     }
 
     /** @brief Called to render the scene */
     void on_render() override
     {
-        // Render widgets
-        m_image.render();
-        m_sprite1.render();
-        m_sprite2.render();
+        // Do standard rendering (i.e. widgets)
+        scene::on_render();
+
+        // Do custom stuff
     }
 
   private:

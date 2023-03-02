@@ -44,7 +44,8 @@ scene::scene(fonts_db& fonts, sdl::window& window, bool is_fixed_fps, float fps)
       m_is_virtual_screen_enabled(false),
       m_virtual_screen_fit(false),
       m_virtual_screen_size{0, 0, 0, 0},
-      m_virtual_screen_bg_color{0, 0, 0, 255}
+      m_virtual_screen_bg_color{0, 0, 0, 255},
+      m_widgets()
 {
     // Initialize the renderer for the scene
     m_renderer->set_blend_mode(SDL_BLENDMODE_BLEND);
@@ -106,6 +107,18 @@ void scene::start()
             if ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_CLOSE))
             {
                 exit = true;
+            }
+            else
+            {
+                // Render event
+                if (event.type == SDL_RENDER_TARGETS_RESET)
+                {
+                    // Update all widgets
+                    for (auto& widget : m_widgets)
+                    {
+                        widget->update_needed();
+                    }
+                }
             }
 
             // Notify event
@@ -180,6 +193,32 @@ void scene::start()
         // Display the scene
         m_renderer->present();
     } while (!exit);
+}
+
+/** @brief Add a widget to the scene */
+bool scene::add_widget(widgets::widget& widget)
+{
+    auto ret = m_widgets.insert(&widget);
+    return ret.second;
+}
+
+/** @brief Remove a widget from the scene */
+bool scene::remove_widget(widgets::widget& widget)
+{
+    return (m_widgets.erase(&widget) != 0);
+}
+
+/** @brief Called to render the scene */
+void scene::on_render()
+{
+    // Render all the visible widgets
+    for (auto& widget : m_widgets)
+    {
+        if (widget->is_visible())
+        {
+            widget->render();
+        }
+    }
 }
 
 /** @brief Set the size of the virtual screen (must be called before start()) */

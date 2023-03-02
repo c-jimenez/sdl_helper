@@ -24,6 +24,7 @@ namespace widgets
 /** @brief Constructor */
 widget::widget(sdl::renderer& renderer)
     : m_renderer(renderer),
+      m_is_visible(true),
       m_animation(),
       m_transform(),
       m_draw_boundary_box(false),

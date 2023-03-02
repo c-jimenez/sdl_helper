@@ -65,6 +65,11 @@ class widget
     /** @brief Copy assignment => deleted */
     widget& operator=(const widget& copy) = delete;
 
+    /** @brief Set the visibility of the widget */
+    void set_visible(bool is_visible) { m_is_visible = is_visible; }
+    /** @brief Get the visibility of the widget */
+    bool is_visible() const { return m_is_visible; }
+
     /** @brief Get the animation applied to the widget */
     animation& get_animation() { return m_animation; }
     /** @brief Get the animation applied to the widget */
@@ -131,6 +136,8 @@ class widget
   protected:
     /** @brief Renderer of the widget */
     sdl::renderer& m_renderer;
+    /** @brief Visibility of the widget */
+    bool m_is_visible;
     /** @brief Animation */
     animation m_animation;
     /** @brief Transformation */
