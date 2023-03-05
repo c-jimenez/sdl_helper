@@ -19,6 +19,8 @@ along with SDLHelper. If not, see <http://www.gnu.org/licenses/>.
 #ifndef GAME_WIDGET_H
 #define GAME_WIDGET_H
 
+#include <functional>
+
 #include "animation.h"
 #include "sdl_renderer.h"
 #include "transform.h"
@@ -55,15 +57,23 @@ class widget
         height
     };
 
+    /** @brief Observer called on the destruction of the widget */
+    using destroy_observer = std::function<void(widget&)>;
+
     /** @brief Constructor */
     widget(sdl::renderer& renderer);
     /** @brief Destructor */
-    virtual ~widget() = default;
+    virtual ~widget();
 
     /** @brief Copy constructor => deleted */
     widget(const widget& copy) = delete;
     /** @brief Copy assignment => deleted */
     widget& operator=(const widget& copy) = delete;
+
+    /** @brief Register an observer called on the destruction of the widget */
+    void register_destroy_observer(destroy_observer observer) { m_destroy_observer = observer; }
+    /** @brief Clear the registered observer called on the destruction of the widget */
+    void clear_destroy_observer() { m_destroy_observer = destroy_observer(); }
 
     /** @brief Set the visibility of the widget */
     void set_visible(bool is_visible) { m_is_visible = is_visible; }
@@ -136,6 +146,8 @@ class widget
   protected:
     /** @brief Renderer of the widget */
     sdl::renderer& m_renderer;
+    /** @brief Observer called on the destruction of the widget */
+    destroy_observer m_destroy_observer;
     /** @brief Visibility of the widget */
     bool m_is_visible;
     /** @brief Animation */

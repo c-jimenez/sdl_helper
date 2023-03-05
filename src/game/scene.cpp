@@ -199,13 +199,24 @@ void scene::start()
 bool scene::add_widget(widgets::widget& widget)
 {
     auto ret = m_widgets.insert(&widget);
+    if (ret.second)
+    {
+        // Register observer to automatically remove the widget on destruction
+        widget.register_destroy_observer([this](widgets::widget& w) { remove_widget(w); });
+    }
     return ret.second;
 }
 
 /** @brief Remove a widget from the scene */
 bool scene::remove_widget(widgets::widget& widget)
 {
-    return (m_widgets.erase(&widget) != 0);
+    bool ret = (m_widgets.erase(&widget) != 0);
+    if (ret)
+    {
+        // Clear registered observer
+        widget.clear_destroy_observer();
+    }
+    return ret;
 }
 
 /** @brief Called to render the scene */

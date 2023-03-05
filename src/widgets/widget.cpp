@@ -24,6 +24,7 @@ namespace widgets
 /** @brief Constructor */
 widget::widget(sdl::renderer& renderer)
     : m_renderer(renderer),
+      m_destroy_observer(),
       m_is_visible(true),
       m_animation(),
       m_transform(),
@@ -38,6 +39,16 @@ widget::widget(sdl::renderer& renderer)
       m_texture(),
       m_is_update_needed(true)
 {
+}
+
+/** @brief Destructor */
+widget::~widget()
+{
+    // Notify observer
+    if (m_destroy_observer)
+    {
+        m_destroy_observer(*this);
+    }
 }
 
 /** @brief Set the background color */
